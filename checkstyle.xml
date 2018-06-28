@@ -5,11 +5,6 @@
 
 <module name="Checker">
 
-    <!-- Use 4 spaces, not tabs -->
-    <module name="FileTabCharacter">
-        <property name="eachLine" value="true"/>
-    </module>
-
     <module name="TreeWalker">
 
         <!-- Java filename must match name of outer class -->

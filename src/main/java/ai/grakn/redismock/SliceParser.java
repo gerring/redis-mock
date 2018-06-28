@@ -1,3 +1,10 @@
+/*-
+ *******************************************************************************
+ * Copyright (c) 2018 Halliburton International, Inc.
+ * All rights reserved. This program and the accompanying materials
+ * are private intellectual property.
+ *
+ *******************************************************************************/
 package ai.grakn.redismock;
 
 import ai.grakn.redismock.exception.EOFException;
@@ -60,31 +67,23 @@ public class SliceParser {
     }
 
     @VisibleForTesting
-    public static Slice consumeSlice(InputStream messageInput, long len) throws ParseErrorException {
+    public static Slice consumeSlice(InputStream messageInput, long len) throws EOFException {
         ByteArrayDataOutput bo = ByteStreams.newDataOutput();
         for (long i = 0; i < len; i++) {
-            try {
-                bo.write(consumeByte(messageInput));
-            } catch (EOFException e) {
-                throw new ParseErrorException();
-            }
+        	bo.write(consumeByte(messageInput));
         }
         return new Slice(bo.toByteArray());
     }
 
     @VisibleForTesting
-    public static long consumeCount(InputStream messageInput) throws ParseErrorException {
-        try {
-            expectByte(messageInput, (byte) '*');
-            long count = consumeLong(messageInput);
-            expectByte(messageInput, (byte) '\n');
-            return count;
-        } catch (EOFException e) {
-            throw new ParseErrorException();
-        }
+    public static long consumeCount(InputStream messageInput) throws EOFException {
+    	expectByte(messageInput, (byte) '*');
+    	long count = consumeLong(messageInput);
+    	expectByte(messageInput, (byte) '\n');
+    	return count;
     }
 
-    public static long consumeCount(byte [] message) throws ParseErrorException{
+    public static long consumeCount(byte [] message) throws EOFException{
         InputStream stream = new ByteArrayInputStream(message);
         return consumeCount(stream);
     }
