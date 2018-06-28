@@ -1,16 +1,19 @@
 package ai.grakn.redismock;
 
-import ai.grakn.redismock.commands.RedisOperationExecutor;
-import ai.grakn.redismock.exception.EOFException;
-import com.google.common.base.Preconditions;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
+
+import ai.grakn.redismock.commands.RedisOperationExecutor;
+import ai.grakn.redismock.exception.EOFException;
+import ai.grakn.redismock.exception.ParseErrorException;
 
 ;
 
@@ -39,21 +42,30 @@ public class RedisClient implements Runnable {
         this.running = new AtomicBoolean(true);
     }
 
-    public void run() {
+    @Override
+	public void run() {
         int count = 0;
         while (running.get()) {
-            Optional<RedisCommand> command = nextCommand();
-
-            if(command.isPresent()){
-                Slice response = executor.execCommand(command.get());
-                sendResponse(response, command.toString());
-
-                count++;
-                if (options.getCloseSocketAfterSeveralCommands() != 0
-                        && options.getCloseSocketAfterSeveralCommands() == count) {
-                    break;
-                }
-            }
+        	
+        	try {
+	            Optional<RedisCommand> command = nextCommand();
+	
+	            if(command.isPresent()){
+	                Slice response = executor.execCommand(command.get());
+	                sendResponse(response, command.toString());
+	
+	                count++;
+	                if (options.getCloseSocketAfterSeveralCommands() != 0
+	                        && options.getCloseSocketAfterSeveralCommands() == count) {
+	                    break;
+	                }
+	            }
+	        
+	        // When this occurs, we do not want to  throw it into the JVM as
+	        // a runtime exception, instead we want to return.
+        	} catch (ParseErrorException parseException) { 
+        		return;
+        	}
         }
 
         LOG.debug("Mock redis connection shutting down.");
