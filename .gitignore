@@ -22,3 +22,9 @@ target/
 # Debug files #
 dep.tree
 
+# bin #
+/bin/
+
+# target #
+/target/
+
