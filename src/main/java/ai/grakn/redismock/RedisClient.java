@@ -15,8 +15,6 @@ import ai.grakn.redismock.commands.RedisOperationExecutor;
 import ai.grakn.redismock.exception.EOFException;
 import ai.grakn.redismock.exception.ParseErrorException;
 
-;
-
 /**
  * Created by Xiaolu on 2015/4/18.
  */

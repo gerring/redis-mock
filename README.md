@@ -7,6 +7,11 @@
 Redis Mock is a simple in-memory mock of redis for java testing. 
 It allows you to test any behaviour dependent on redis without having to deploy an instance of redis
 
+## Building the Jars Without Tests
+mvn install package -DskipTests
+
+The jars are made but an error will happen during the javadoc.
+
 ## Quickstart 
 
 Add it as a dependency in Maven as:
